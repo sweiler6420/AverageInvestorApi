@@ -11,6 +11,6 @@ class Settings(BaseSettings):
     sm_region: str
 
     class Config:
-        env_file = ('avg_inv_api\.env')
+        env_file = ('.env')
 
 settings = Settings()
