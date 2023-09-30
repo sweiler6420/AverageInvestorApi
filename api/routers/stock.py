@@ -5,11 +5,11 @@ from ..database import get_db
 from uuid import UUID
 
 router = APIRouter(
-    prefix="/stocks",
+    prefix="/v1/stocks",
     tags=['Stocks']
 )
 
-@router.get('/{id}', response_model=schemas.Stocks)
+@router.get('{id}', response_model=schemas.Stocks)
 def get_user(stock_id: UUID, db: Session = Depends(get_db), current_user: UUID = Depends(oauth2.get_current_user)):
     stock = db.query(models.Stocks).filter(models.Stocks.stock_id == stock_id).first()
     if not stock:
