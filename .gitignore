@@ -1,0 +1,29 @@
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# API
+__pycache__/
+/backup
+alembic
+*.ini
+
+# Data
+/data/generated_data
+/data/tos_data
+*.ps1
+
+# DB Migrations
+
+# EC2
+config.ini
+configs.ini
+
+
+
+*.txt
