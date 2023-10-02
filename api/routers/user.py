@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-from sqlalchemy import text
+from sqlalchemy import text, column
 from .. import models, schemas, utils, oauth2
 from ..database import get_db
 from ..database import engine
@@ -14,9 +14,10 @@ router = APIRouter(
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
-    # Possible raw sql statement for now...
-    # user = db.query(models.User.__table__).from_statement(text("""select * from avg_inv.users where user_id=:user_id""")).params(user_id="5ed8597e-7aac-4f02-893f-f52e93eef7ec").all()
-    # user2 = [dict(row) for row in user]
+    # Both work, using model.__table__ can be used for easy queries raw sql statement for now...
+    # user1 = db.query(column('user_id')).from_statement(text("""select user_id from avg_inv.users where user_id=:user_id""")).params(user_id="5ed8597e-7aac-4f02-893f-f52e93eef7ec").all()
+    # user1 = db.query(models.User.__table__).from_statement(text("""select * from avg_inv.users where user_id=:user_id""")).params(user_id="5ed8597e-7aac-4f02-893f-f52e93eef7ec").all()
+    # user2 = [dict(row) for row in user1]
     # print(user2)
 
     test_user = db.query(models.User).filter(models.User.email == user.email).first()
