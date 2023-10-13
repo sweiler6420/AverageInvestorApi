@@ -40,8 +40,7 @@ class Stocks(BaseModel):
 
 class StockData(BaseModel):
     stock_id:  UUID
-    date: date
-    time: time
+    datetime: datetime
     open_price: float
     high_price: float
     low_price: float

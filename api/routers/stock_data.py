@@ -12,9 +12,10 @@ router = APIRouter(
 )
 
 @router.get('', response_model=List[schemas.StockData])
-def get_user(db: Session = Depends(get_db), limit: int = 108, offset: int = 0, search: Optional[str] = ""):
+def get_stock_data(db: Session = Depends(get_db), limit: int = 108, offset: int = 0, search: Optional[str] = ""):
     print(search, limit, offset)
-    stock_data = db.query(models.StockData).join(models.Stocks, models.StockData.stock_id == models.Stocks.stock_id, isouter=False).filter(models.Stocks.ticker_symbol.contains(func.lower(search))).order_by(models.StockData.date.desc(), models.StockData.time.desc()).limit(limit).offset(offset).all()
+    stock_data = db.query(models.StockData.stock_id, (models.StockData.date + models.StockData.time).label("datetime"), models.StockData.open_price, models.StockData.high_price, models.StockData.low_price, models.StockData.close_price, models.StockData.volume) \
+        .join(models.Stocks, models.StockData.stock_id == models.Stocks.stock_id, isouter=False).filter(models.Stocks.ticker_symbol.contains(func.lower(search))).order_by(models.StockData.date.asc(), models.StockData.time.asc()).limit(limit).offset(offset).all()
 
     if not stock_data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
