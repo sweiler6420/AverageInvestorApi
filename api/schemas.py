@@ -24,6 +24,7 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    expire: int
 
 class TokenData(BaseModel):
     id: Optional[UUID] = None
@@ -49,3 +50,19 @@ class StockData(BaseModel):
 
     class Config:
         orm_mode = True
+
+class CreateWatchlist(BaseModel):
+    watchlist_id: UUID
+    title: str
+
+    class Config:
+        orm_mode = True
+
+class WatchlistData(BaseModel):
+    stock_id: UUID
+
+    class Config:
+        orm_mode = True
+
+
+    

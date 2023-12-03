@@ -1,4 +1,4 @@
-from jose import JWTError, jwt
+from jose import ExpiredSignatureError, JWTError, jwt
 from datetime import datetime, timedelta
 from . import schemas, database, models
 from fastapi import Depends, status, HTTPException
@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from .config import settings
 from uuid import UUID
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='v1/login')
 
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
@@ -22,19 +22,29 @@ def create_access_token(data: dict):
 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-    return encoded_jwt
+    return_payload = {
+        "access_token": encoded_jwt,
+        "expire": ACCESS_TOKEN_EXPIRE_MINUTES
+    }
+
+    return return_payload
     
 
 def verify_access_token(token: str, credentials_exception):
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        
         id: UUID = payload.get("user_id")
         if id is None:
             raise credentials_exception
         token_data = schemas.TokenData(id=id)
+    except ExpiredSignatureError:
+        exception = HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Token Expired", headers={"WWW-Authenticate": "Bearer"})
+        raise exception
     except JWTError:
-        raise credentials_exception
+        exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Could not validate credentials", headers={"WWW-Authenticate": "Bearer"})
+        raise exception
 
     return token_data
 

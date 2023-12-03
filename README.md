@@ -89,13 +89,13 @@ alembic init alembic
 
 ## CREATE ALEMBIC DB MIGRATION
 
-1. Once Alembic has been initialized run command
+1. Once Alembic has been initialized run below command to autogenerate the migration
 
 ```
-alembic revision -m "init"
+alembic revision --autogenerate -m "{note}"
 ```
 
-2. This will create a version folder in alembic with a new version pythong file
+2. This will create a version folder in alembic with a new version python file
 
 3. Open the newest version python file
 

@@ -2,7 +2,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Enum, Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
-from sqlalchemy.sql.sqltypes import TIME, DATE, TIMESTAMP, NUMERIC, VARCHAR, BIGINT
+from sqlalchemy.sql.sqltypes import TIME, DATE, TIMESTAMP, NUMERIC, VARCHAR, BIGINT, INTEGER
 from enum import Enum
 from .database import Base
 
@@ -18,7 +18,6 @@ class User(Base):
 
 class Stocks(Base):
     __tablename__ = "stocks"
-    # __table_args__ =  {'schema' : 'avg_inv'}
 
     stock_id = Column(UUID(as_uuid=True), primary_key=True, nullable=False, server_default=text('gen_random_uuid()'))
     ticker_symbol = Column(VARCHAR(length=5), nullable = False, unique=True)
@@ -28,7 +27,6 @@ class Stocks(Base):
 
 class StockData(Base):
     __tablename__ = "stock_data"
-    # __table_args__ =  {'schema' : 'avg_inv'}
 
     id = Column(BIGINT, server_default = text("nextval('avg_inv.stock_data_seq'::regclass)"), primary_key=True)
     stock_id = Column(UUID(as_uuid=True), ForeignKey("avg_inv.stocks.stock_id"), nullable=False)
@@ -41,3 +39,21 @@ class StockData(Base):
     volume = Column(BIGINT, nullable=False)
 
     owner = relationship("Stocks")
+
+class Watchlist(Base):
+    __tablename__ = "watchlists"
+
+    watchlist_id = Column(UUID(as_uuid=True), primary_key=True, nullable=False, server_default=text('gen_random_uuid()'))
+    title = Column(VARCHAR(length=50), nullable=False, server_default='My Watchlist')
+    user_id = Column(UUID(as_uuid=True), ForeignKey("avg_inv.users.user_id"), nullable=False)
+
+class WatchlistData(Base):
+    __tablename__ = "watchlist_data"
+    
+    watchlist_id = Column(UUID(as_uuid=True), ForeignKey("avg_inv.watchlists.watchlist_id"), nullable=False)
+    stock_id = Column(UUID(as_uuid=True), ForeignKey("avg_inv.stocks.stock_id"), nullable=False)
+    position = Column(INTEGER, nullable=False)
+
+    __mapper_args__ = { 
+        "primary_key": [watchlist_id, stock_id]
+    }
