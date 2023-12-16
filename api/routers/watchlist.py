@@ -12,9 +12,7 @@ router = APIRouter(
     tags=['Watchlist']
 )
 
-#TODO: Need to actually implement a table for a users watchlists, simple connection to stock id and users id and unique watchlist id,
-# perhaps also with an ordering key. That will be a unique implementation as it will need to post to that watchlist each time the list
-# order gets changed
+
 @router.get("/{watchlist_id}", response_model=List[schemas.Stocks])
 def get_watchlist(watchlist_id: UUID, db: Session = Depends(get_db), current_user: UUID = Depends(oauth2.get_current_user)):
     
