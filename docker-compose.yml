@@ -1,0 +1,19 @@
+version: "3"
+
+volumes:
+  data:
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    volumes:
+      - data:/code/data
+      # - ./.aws:/root/.aws:ro
+      - $USERPROFILE/.aws:/root/.aws:ro

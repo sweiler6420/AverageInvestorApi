@@ -175,3 +175,23 @@ ACCESS_TOKEN_EXPIRE_MINUTES={expiration in minutes}
 7. Add bitbucket origin back
 
 8. THIS WILL MOST LIKELY CHANGE!
+
+# RUNNING DOCKER AND DOCKER COMPOSE
+
+1. As of right now, the way to create this image and run it will mostly be done with the normal docker commands and not
+   docker-compose. I was testing the docker compose route and it was frustrating to get the aws creds working. 
+
+2. In order to build the image, you must run this command
+
+```
+docker build -t avg_inv_api .
+```
+
+3. This will create your image tagged avg_inv_api
+
+4. To run this container run this below command
+
+```
+docker run -p 8080:8080 -e AWS_ACCESS_KEY_ID={$AWS ACCESS KEY ID} -e AWS_SECRET_ACCESS_KEY={$AWS SECRET ACCESS KEY} avg_inv_api
+```
+5. You must manually replace your aws creds in that command. Once i start working on externally hosting i will need to further this kind of development and somehow store the aws creds on that server and then store them as env variables that can then be injected in this run command. Ideally i would actually somehow mount the credentials somehow that is not visible. Technically speaking right now i can go and look at the env variables running the container, that is a security issue. Once this is running, you can access this server from anywhere on your local network by using http://{localHostMachineIP4}:8080/docs

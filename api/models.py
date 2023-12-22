@@ -57,3 +57,15 @@ class WatchlistData(Base):
     __mapper_args__ = { 
         "primary_key": [watchlist_id, stock_id]
     }
+
+class Politician(Base):
+    __tablename__ = "politicians"
+
+    politician_id = Column(VARCHAR(length=50), primary_key=True, nullable=False)
+    state = Column(VARCHAR(length=5), nullable=True)
+    chamber = Column(VARCHAR(length=50), nullable=True)
+    dob = Column(DATE, nullable=True)
+    first_name = Column(VARCHAR(length=80), nullable=False)
+    last_name = Column(VARCHAR(length=80), nullable=False)
+    gender = Column(VARCHAR(length=25), nullable=True)
+    party = Column(VARCHAR(length=50), nullable=False)
